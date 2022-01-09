@@ -9,6 +9,8 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -17,16 +19,12 @@ import java.util.Set;
 @Setter
 @Entity
 public class Department {
-  @Schema(description = "Unique identifier of the Department.", example = "1", required = true)
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Schema(description = "Title of the department.", example = "Mobile & Web", required = true)
-  @NotBlank
   private String title;
 
-  @JsonIgnore
   @OneToMany(mappedBy = "departmentId")
-  private Set<Employee> employees;
+  private List<Employee> employees = new ArrayList<>();
 }
