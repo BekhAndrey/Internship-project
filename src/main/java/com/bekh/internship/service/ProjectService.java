@@ -1,21 +1,24 @@
 package com.bekh.internship.service;
 
-import com.bekh.internship.model.Department;
+import com.bekh.internship.dto.ProjectDto;
 import com.bekh.internship.model.Project;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 public interface ProjectService {
-  void save(Project project);
+  ProjectDto save(ProjectDto projectDto);
 
-  void update(Project project);
+  ProjectDto update(ProjectDto projectDto);
 
-  void delete(Project project);
+  Project mapToEntity(ProjectDto projectDto);
+
+  ProjectDto mapToDto(Project project);
 
   void deleteById(Long id);
 
-  List<Project> findAll();
+  List<ProjectDto> findAll();
 
-  Project findById(Long id);
+  ProjectDto findById(Long id);
+
+  ProjectDto findByTitle(String title);
 }

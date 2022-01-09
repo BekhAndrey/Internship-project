@@ -1,17 +1,25 @@
 package com.bekh.internship.service;
 
+import com.bekh.internship.dto.DepartmentDto;
 import com.bekh.internship.model.Department;
 
 import java.util.List;
 
 public interface DepartmentService {
-  void save(Department department);
+  DepartmentDto save(DepartmentDto departmentDto);
 
-  void delete(Department department);
+  DepartmentDto update(DepartmentDto departmentDto);
+
+
+  DepartmentDto mapToDto(Department departmentDto);
+
+  Department mapToEntity(DepartmentDto departmentDto);
+
+  DepartmentDto findByTitle(String title);
 
   void deleteById(Long id);
 
-  List<Department> findAll();
+  List<DepartmentDto> findAll();
 
-  Department findById(Long id);
+  DepartmentDto findById(Long id);
 }

@@ -1,9 +1,8 @@
 package com.bekh.internship.controller;
 
-import com.bekh.internship.dto.ProjectDto;
-import com.bekh.internship.model.Employee;
-import com.bekh.internship.model.Project;
-import com.bekh.internship.service.ProjectService;
+import com.bekh.internship.dto.PositionDto;
+import com.bekh.internship.model.Position;
+import com.bekh.internship.service.PositionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -19,73 +18,73 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/projects")
-@Tag(name = "project", description = "Project API")
+@RequestMapping("/positions")
+@Tag(name = "position", description = "Position API")
 @AllArgsConstructor
-public class ProjectController {
+public class PositionController {
 
-  private final ProjectService projectService;
+  private final PositionService positionService;
 
   @Operation(
-      summary = "Find all projects",
-      description = "Returns the list of all available projects",
-      tags = {"project"})
+      summary = "Find all positions",
+      description = "Returns the list of all positions",
+      tags = {"position"})
   @ApiResponses(
       value = {
         @ApiResponse(
             responseCode = "200",
             description = "Successful operation",
             content =
-                @Content(array = @ArraySchema(schema = @Schema(implementation = ProjectDto.class))))
+                @Content(array = @ArraySchema(schema = @Schema(implementation = PositionDto.class))))
       })
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
-  public List<ProjectDto> getAll() {
-    return projectService.findAll();
+  public List<PositionDto> getAll() {
+    return positionService.findAll();
   }
 
   @Operation(
-      summary = "Create project",
-      description = "Creates new project",
-      tags = {"project"})
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "201",
-            description = "Successful operation",
-            content = @Content(schema = @Schema(implementation = ProjectDto.class)))
-      })
-  @PostMapping
-  @ResponseStatus(HttpStatus.CREATED)
-  public ProjectDto create(@RequestBody ProjectDto projectDto) {
-    return projectService.save(projectDto);
-  }
-
-  @Operation(
-      summary = "Update project",
-      description = "Update existing project",
-      tags = {"project"})
+      summary = "Create position",
+      description = "Creates new position",
+      tags = {"position"})
   @ApiResponses(
       value = {
         @ApiResponse(
             responseCode = "200",
             description = "Successful operation",
-            content = @Content(schema = @Schema(implementation = ProjectDto.class)))
+            content = @Content(schema = @Schema(implementation = PositionDto.class)))
       })
-  @PutMapping
-  @ResponseStatus(HttpStatus.OK)
-  public ProjectDto update(@RequestBody ProjectDto projectDto) {
-    return projectService.update(projectDto);
+  @PostMapping
+  @ResponseStatus(HttpStatus.CREATED)
+  public PositionDto create(@RequestBody PositionDto positionDto) {
+    return positionService.save(positionDto);
   }
 
   @Operation(
-      summary = "Delete project",
-      description = "Delete existing project",
-      tags = {"project"})
+      summary = "Update position record",
+      description = "Update existing position",
+      tags = {"position"})
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Successful operation",
+            content = @Content(schema = @Schema(implementation = PositionDto.class)))
+      })
+  @PutMapping
+  @ResponseStatus(HttpStatus.OK)
+  public PositionDto update(@RequestBody PositionDto positionDto) {
+    return positionService.update(positionDto);
+  }
+
+  @Operation(
+      summary = "Delete position",
+      description = "Delete existing position",
+      tags = {"position"})
   @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successful operation")})
   @DeleteMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
   public void delete(@PathVariable Long id) {
-    projectService.deleteById(id);
+    positionService.deleteById(id);
   }
 }

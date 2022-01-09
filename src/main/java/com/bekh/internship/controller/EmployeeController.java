@@ -1,5 +1,7 @@
 package com.bekh.internship.controller;
 
+import com.bekh.internship.dto.RequestEmployeeDto;
+import com.bekh.internship.dto.ResponseEmployeeDto;
 import com.bekh.internship.model.Employee;
 import com.bekh.internship.service.EmployeeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,6 +11,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,72 +21,71 @@ import java.util.List;
 @RestController
 @RequestMapping("/employees")
 @Tag(name = "employee", description = "Employee API")
+@AllArgsConstructor
 public class EmployeeController {
 
   private final EmployeeService employeeService;
 
-  public EmployeeController(EmployeeService employeeService) {
-    this.employeeService = employeeService;
-  }
-
   @Operation(
-          summary = "Find all employees",
-          description = "Returns the list of all available employees",
-          tags = {"employee"})
+      summary = "Find all employees",
+      description = "Returns the list of all available employees",
+      tags = {"employee"})
   @ApiResponses(
-          value = {
-                  @ApiResponse(
-                          responseCode = "200",
-                          description = "Successful operation",
-                          content =
-                          @Content(array = @ArraySchema(schema = @Schema(implementation = Employee.class))))
-          })
-  @GetMapping("/")
-  public ResponseEntity<List<Employee>> getEmployees() {
-    return ResponseEntity.ok(employeeService.findAll());
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Successful operation",
+            content =
+                @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseEmployeeDto.class))))
+      })
+  @GetMapping
+  @ResponseStatus(HttpStatus.OK)
+  public List<ResponseEmployeeDto> getAll() {
+    return employeeService.findAll();
   }
 
   @Operation(
-          summary = "Create employee",
-          description = "Creates new employee",
-          tags = {"employee"})
+      summary = "Create employee",
+      description = "Creates new employee",
+      tags = {"employee"})
   @ApiResponses(
-          value = {
-                  @ApiResponse(
-                          responseCode = "200",
-                          description = "Successful operation",
-                          content = @Content(schema = @Schema(implementation = Employee.class)))
-          })
-  @PostMapping("/")
-  public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee) {
-    employeeService.save(employee);
-    return ResponseEntity.ok(employee);
+      value = {
+        @ApiResponse(
+            responseCode = "201",
+            description = "Successful operation",
+            content = @Content(schema = @Schema(implementation = ResponseEmployeeDto.class)))
+      })
+  @PostMapping
+  @ResponseStatus(HttpStatus.CREATED)
+  public ResponseEmployeeDto create(@RequestBody RequestEmployeeDto requestEmployeeDto) {
+    return employeeService.save(requestEmployeeDto);
   }
 
   @Operation(
-          summary = "Update employee",
-          description = "Update existing employee",
-          tags = {"employee"})
+      summary = "Update employee",
+      description = "Update existing employee",
+      tags = {"employee"})
   @ApiResponses(
-          value = {
-                  @ApiResponse(
-                          responseCode = "200",
-                          description = "Successful operation",
-                          content = @Content(schema = @Schema(implementation = Employee.class)))
-          })
-  @PutMapping("/")
-  public ResponseEntity<Employee> updateEmployee(@RequestBody Employee employee) {
-    employeeService.update(employee);
-    return ResponseEntity.ok(employee);
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Successful operation",
+            content = @Content(schema = @Schema(implementation = ResponseEmployeeDto.class)))
+      })
+  @PutMapping
+  @ResponseStatus(HttpStatus.OK)
+  public ResponseEmployeeDto update(@RequestBody RequestEmployeeDto requestEmployeeDto) {
+    return employeeService.update(requestEmployeeDto);
   }
 
   @Operation(
-          summary = "Delete employee",
-          description = "Delete existing employee",
-          tags = {"employee"})
+      summary = "Delete employee",
+      description = "Delete existing employee",
+      tags = {"employee"})
   @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successful operation")})
   @DeleteMapping("/{id}")
-  public void deleteEmployee(@PathVariable Long id) {
+  @ResponseStatus(HttpStatus.OK)
+  public void delete(@PathVariable Long id) {
     employeeService.deleteById(id);
   }
 }
