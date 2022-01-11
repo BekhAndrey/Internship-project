@@ -1,5 +1,7 @@
 package com.bekh.internship.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +13,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ResponseEmployeeDto {
-    @Schema(description = "Unique identifier of the Employee.", example = "1", required = true)
+    @Schema(description = "Unique identifier of the Employee.", example = "1")
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
     @Schema(description = "First name of the employee.", example = "Andrey", required = true)
