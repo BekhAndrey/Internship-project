@@ -40,12 +40,6 @@ public class ProjectServiceImpl implements ProjectService {
 
   @Override
   public Project mapToEntity(ProjectDto projectDto) {
-    if(projectDto.getId()!=null){
-      Optional<Project> projectOptional = projectRepository.findById(projectDto.getId());
-      if (projectOptional.isPresent()) {
-        return projectOptional.get();
-      }
-    }
     Project project = new Project();
     project.setId(projectDto.getId());
     project.setTitle(projectDto.getTitle());
