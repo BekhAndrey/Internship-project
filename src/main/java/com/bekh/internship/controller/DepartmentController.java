@@ -74,9 +74,10 @@ public class DepartmentController {
             description = "Successful operation",
             content = @Content(schema = @Schema(implementation = DepartmentDto.class)))
       })
-  @PutMapping
+  @PutMapping("/edit/{id}")
   @ResponseStatus(HttpStatus.OK)
-  public DepartmentDto update(@RequestBody DepartmentDto departmentDto) {
+  public DepartmentDto update(@PathVariable Long id,@RequestBody DepartmentDto departmentDto) {
+    departmentDto.setId(id);
     return departmentService.update(departmentDto);
   }
 
@@ -85,7 +86,7 @@ public class DepartmentController {
       description = "Delete existing department",
       tags = {"department"})
   @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successful operation")})
-  @DeleteMapping("/{id}")
+  @DeleteMapping("/delete/{id}")
   @ResponseStatus(HttpStatus.OK)
   public void delete(@PathVariable Long id) {
     departmentService.deleteById(id);

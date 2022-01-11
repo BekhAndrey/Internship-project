@@ -72,9 +72,10 @@ public class ProjectController {
             description = "Successful operation",
             content = @Content(schema = @Schema(implementation = ProjectDto.class)))
       })
-  @PutMapping
+  @PutMapping("/edit/{id}")
   @ResponseStatus(HttpStatus.OK)
-  public ProjectDto update(@RequestBody ProjectDto projectDto) {
+  public ProjectDto update(@PathVariable Long id, @RequestBody ProjectDto projectDto) {
+    projectDto.setId(id);
     return projectService.update(projectDto);
   }
 
@@ -83,7 +84,7 @@ public class ProjectController {
       description = "Delete existing project",
       tags = {"project"})
   @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successful operation")})
-  @DeleteMapping("/{id}")
+  @DeleteMapping("/delete/{id}")
   @ResponseStatus(HttpStatus.OK)
   public void delete(@PathVariable Long id) {
     projectService.deleteById(id);

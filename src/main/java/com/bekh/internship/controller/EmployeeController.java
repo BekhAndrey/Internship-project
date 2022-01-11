@@ -72,9 +72,10 @@ public class EmployeeController {
             description = "Successful operation",
             content = @Content(schema = @Schema(implementation = ResponseEmployeeDto.class)))
       })
-  @PutMapping
+  @PutMapping("/edit/{id}")
   @ResponseStatus(HttpStatus.OK)
-  public ResponseEmployeeDto update(@RequestBody RequestEmployeeDto requestEmployeeDto) {
+  public ResponseEmployeeDto update(@PathVariable Long id, @RequestBody RequestEmployeeDto requestEmployeeDto) {
+    requestEmployeeDto.setId(id);
     return employeeService.update(requestEmployeeDto);
   }
 
@@ -83,7 +84,7 @@ public class EmployeeController {
       description = "Delete existing employee",
       tags = {"employee"})
   @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successful operation")})
-  @DeleteMapping("/{id}")
+  @DeleteMapping("/delete/{id}")
   @ResponseStatus(HttpStatus.OK)
   public void delete(@PathVariable Long id) {
     employeeService.deleteById(id);

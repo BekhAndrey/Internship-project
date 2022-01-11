@@ -71,9 +71,10 @@ public class PositionController {
             description = "Successful operation",
             content = @Content(schema = @Schema(implementation = PositionDto.class)))
       })
-  @PutMapping
+  @PutMapping("/edit/{id}")
   @ResponseStatus(HttpStatus.OK)
-  public PositionDto update(@RequestBody PositionDto positionDto) {
+  public PositionDto update(@PathVariable Long id, @RequestBody PositionDto positionDto) {
+    positionDto.setId(id);
     return positionService.update(positionDto);
   }
 
@@ -82,7 +83,7 @@ public class PositionController {
       description = "Delete existing position",
       tags = {"position"})
   @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successful operation")})
-  @DeleteMapping("/{id}")
+  @DeleteMapping("/delete/{id}")
   @ResponseStatus(HttpStatus.OK)
   public void delete(@PathVariable Long id) {
     positionService.deleteById(id);
