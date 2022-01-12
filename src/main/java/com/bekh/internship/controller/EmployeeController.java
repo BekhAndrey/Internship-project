@@ -1,8 +1,7 @@
 package com.bekh.internship.controller;
 
-import com.bekh.internship.dto.RequestEmployeeDto;
-import com.bekh.internship.dto.ResponseEmployeeDto;
-import com.bekh.internship.model.Employee;
+import com.bekh.internship.dto.EmployeeRequestDto;
+import com.bekh.internship.dto.EmployeeResponseDto;
 import com.bekh.internship.service.EmployeeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -13,7 +12,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,11 +34,11 @@ public class EmployeeController {
             responseCode = "200",
             description = "Successful operation",
             content =
-                @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseEmployeeDto.class))))
+                @Content(array = @ArraySchema(schema = @Schema(implementation = EmployeeResponseDto.class))))
       })
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
-  public List<ResponseEmployeeDto> getAll() {
+  public List<EmployeeResponseDto> getAll() {
     return employeeService.findAll();
   }
 
@@ -53,11 +51,11 @@ public class EmployeeController {
         @ApiResponse(
             responseCode = "201",
             description = "Successful operation",
-            content = @Content(schema = @Schema(implementation = ResponseEmployeeDto.class)))
+            content = @Content(schema = @Schema(implementation = EmployeeResponseDto.class)))
       })
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public ResponseEmployeeDto create(@RequestBody RequestEmployeeDto requestEmployeeDto) {
+  public EmployeeResponseDto create(@RequestBody EmployeeRequestDto requestEmployeeDto) {
     return employeeService.save(requestEmployeeDto);
   }
 
@@ -70,11 +68,11 @@ public class EmployeeController {
         @ApiResponse(
             responseCode = "200",
             description = "Successful operation",
-            content = @Content(schema = @Schema(implementation = ResponseEmployeeDto.class)))
+            content = @Content(schema = @Schema(implementation = EmployeeResponseDto.class)))
       })
-  @PutMapping("/edit/{id}")
+  @PutMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
-  public ResponseEmployeeDto update(@PathVariable Long id, @RequestBody RequestEmployeeDto requestEmployeeDto) {
+  public EmployeeResponseDto update(@PathVariable Long id, @RequestBody EmployeeRequestDto requestEmployeeDto) {
     requestEmployeeDto.setId(id);
     return employeeService.update(requestEmployeeDto);
   }
@@ -84,7 +82,7 @@ public class EmployeeController {
       description = "Delete existing employee",
       tags = {"employee"})
   @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successful operation")})
-  @DeleteMapping("/delete/{id}")
+  @DeleteMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
   public void delete(@PathVariable Long id) {
     employeeService.deleteById(id);
