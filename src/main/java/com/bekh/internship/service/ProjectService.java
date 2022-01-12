@@ -10,10 +10,6 @@ public interface ProjectService {
 
   ProjectDto update(ProjectDto projectDto);
 
-  Project mapToEntity(ProjectDto projectDto);
-
-  ProjectDto mapToDto(Project project);
-
   void deleteById(Long id);
 
   List<ProjectDto> findAll();
