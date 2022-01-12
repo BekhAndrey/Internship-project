@@ -1,10 +1,9 @@
-package controller;
+package it;
 
-import com.bekh.internship.config.JpaConfig;
-import com.bekh.internship.config.LiquibaseConfig;
 import com.bekh.internship.config.SpringConfig;
-import com.bekh.internship.dto.DepartmentDto;
+import com.bekh.internship.dto.EmployeeRequestDto;
 import com.bekh.internship.service.DepartmentService;
+import com.bekh.internship.service.EmployeeService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,9 +19,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import javax.transaction.Transactional;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -30,12 +27,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
 @Transactional
-public class DepartmentControllerTest {
+public class EmployeeControllerTest {
 
   private MockMvc mockMvc;
   private ObjectMapper mapper;
 
   @Autowired private WebApplicationContext webApplicationContext;
+
+  @Autowired private EmployeeService employeeService;
 
   @Autowired private DepartmentService departmentService;
 
@@ -47,19 +46,24 @@ public class DepartmentControllerTest {
 
   @Transactional
   @Test
-  public void getDepartmentsTest() throws Exception {
-    mockMvc.perform(get("/departments")).andExpect(status().isOk());
+  public void getEmployeesTest() throws Exception {
+    mockMvc.perform(get("/employees")).andExpect(status().isOk());
   }
 
   @Transactional
   @Test
-  public void createDepartmentTest() throws Exception {
-    DepartmentDto departmentDto = new DepartmentDto();
-    departmentDto.setTitle("Test Department");
-    String json = mapper.writeValueAsString(departmentDto);
+  public void createEmployeeTest() throws Exception {
+    EmployeeRequestDto employeeRequestDto = new EmployeeRequestDto();
+    employeeRequestDto.setFirstName("Test first name");
+    employeeRequestDto.setLastName("Test last name");
+    employeeRequestDto.setEmail("test@gmail.com");
+    employeeRequestDto.setPassword("qwerty");
+    employeeRequestDto.setPosition("Test position");
+    employeeRequestDto.setDepartmentTitle(departmentService.findAll().get(0).getTitle());
+    String json = mapper.writeValueAsString(employeeRequestDto);
     mockMvc
         .perform(
-            post("/departments")
+            post("/employees")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
@@ -68,38 +72,43 @@ public class DepartmentControllerTest {
 
   @Transactional
   @Test
-  public void updateDepartmentTest() throws Exception {
-    DepartmentDto departmentToUpdate = createDepartmentDto();
-    departmentToUpdate.setTitle("Updated title");
-    String json = mapper.writeValueAsString(departmentToUpdate);
+  public void updateEmployeeTest() throws Exception {
+    EmployeeRequestDto employeeToUpdate = createEmployeeDto();
+    employeeToUpdate.setEmail("newEmail@gmail.com");
+    String json = mapper.writeValueAsString(employeeToUpdate);
     mockMvc
         .perform(
-            put("/departments/edit/{id}", departmentToUpdate.getId())
+            put("/employees/{id}", employeeToUpdate.getId())
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.title").value("Updated title"))
-        .andExpect(content().json(json));
+        .andExpect(jsonPath("$.email").value("newEmail@gmail.com"));
   }
 
   @Transactional
   @Test
-  public void deleteDepartmentTest() throws Exception {
-    DepartmentDto departmentDto = createDepartmentDto();
-    String json = mapper.writeValueAsString(departmentDto);
+  public void deleteEmployeeTest() throws Exception {
+    EmployeeRequestDto employeeToDelete = createEmployeeDto();
+    String json = mapper.writeValueAsString(employeeToDelete);
     mockMvc
         .perform(
-            delete("/departments/delete/{id}", departmentDto.getId())
+            delete("/employees/{id}", employeeToDelete.getId())
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
         .andExpect(status().isOk());
   }
 
-  private DepartmentDto createDepartmentDto() {
-    DepartmentDto departmentDto = new DepartmentDto();
-    departmentDto.setTitle("Test department");
-    return departmentService.save(departmentDto);
+  private EmployeeRequestDto createEmployeeDto() {
+    EmployeeRequestDto employeeDto = new EmployeeRequestDto();
+    employeeDto.setFirstName("Test first name");
+    employeeDto.setLastName("Test last name");
+    employeeDto.setEmail("test@gmail.com");
+    employeeDto.setPassword("qwerty");
+    employeeDto.setPosition("Test position");
+    employeeDto.setDepartmentTitle(departmentService.findAll().get(0).getTitle());
+    employeeDto.setId(employeeService.save(employeeDto).getId());
+    return employeeDto;
   }
 }
