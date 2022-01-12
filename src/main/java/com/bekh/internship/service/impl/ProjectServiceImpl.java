@@ -1,6 +1,7 @@
 package com.bekh.internship.service.impl;
 
 import com.bekh.internship.dto.ProjectDto;
+import com.bekh.internship.mapper.ProjectMapper;
 import com.bekh.internship.model.Project;
 import com.bekh.internship.repository.DepartmentRepository;
 import com.bekh.internship.repository.ProjectRepository;
@@ -25,7 +26,7 @@ public class ProjectServiceImpl implements ProjectService {
 
   @Override
   public ProjectDto save(ProjectDto projectDto) {
-    return mapToDto(projectRepository.save(mapToEntity(projectDto)));
+    return ProjectMapper.mapToDto(projectRepository.save(ProjectMapper.mapToEntity(projectDto)));
   }
 
   @Override
@@ -35,27 +36,7 @@ public class ProjectServiceImpl implements ProjectService {
     projectToUpdate.setTitle(projectDto.getTitle());
     projectToUpdate.setStartDate(projectDto.getStartDate());
     projectToUpdate.setEndDate(projectDto.getEndDate());
-    return mapToDto(projectRepository.save(projectToUpdate));
-  }
-
-  @Override
-  public Project mapToEntity(ProjectDto projectDto) {
-    Project project = new Project();
-    project.setId(projectDto.getId());
-    project.setTitle(projectDto.getTitle());
-    project.setStartDate(projectDto.getStartDate());
-    project.setEndDate(projectDto.getEndDate());
-    return project;
-  }
-
-  @Override
-  public ProjectDto mapToDto(Project project) {
-    ProjectDto projectDto = new ProjectDto();
-    projectDto.setId(project.getId());
-    projectDto.setTitle(project.getTitle());
-    projectDto.setStartDate(project.getStartDate());
-    projectDto.setEndDate(project.getEndDate());
-    return projectDto;
+    return ProjectMapper.mapToDto(projectRepository.save(projectToUpdate));
   }
 
   @Override
@@ -65,19 +46,19 @@ public class ProjectServiceImpl implements ProjectService {
 
   @Override
   public List<ProjectDto> findAll() {
-    return projectRepository.findAll().stream().map(this::mapToDto).collect(toList());
+    return projectRepository.findAll().stream().map(ProjectMapper::mapToDto).collect(toList());
   }
 
   @Override
   public ProjectDto findById(Long id) {
-    return mapToDto(projectRepository
+    return ProjectMapper.mapToDto(projectRepository
             .findById(id)
             .orElseThrow(() -> new EntityNotFoundException(PROJECT_NOT_FOUND_MESSAGE)));
   }
 
   @Override
   public ProjectDto findByTitle(String title) {
-    return mapToDto(projectRepository
+    return ProjectMapper.mapToDto(projectRepository
             .findByTitle(title)
             .orElseThrow(() -> new EntityNotFoundException(PROJECT_NOT_FOUND_MESSAGE)));
   }
