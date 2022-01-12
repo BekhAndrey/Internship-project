@@ -1,54 +1,109 @@
 package com.bekh.internship.service.impl;
 
+import com.bekh.internship.dto.RequestEmployeeDto;
+import com.bekh.internship.dto.ResponseEmployeeDto;
 import com.bekh.internship.model.Employee;
+import com.bekh.internship.repository.DepartmentRepository;
 import com.bekh.internship.repository.EmployeeRepository;
 import com.bekh.internship.service.EmployeeService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 
-@Service("employeeService")
+import static java.util.stream.Collectors.toList;
+
+@Service
+@AllArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
 
-  @Autowired private EmployeeRepository employeeRepository;
+  private static final String EMPLOYEE_NOT_FOUND_MESSAGE = "Cannot find such employee";
+  private final EmployeeRepository employeeRepository;
+  private final DepartmentRepository departmentRepository;
 
   @Override
-  public void save(Employee employee) {
-    employeeRepository.save(employee);
+  public ResponseEmployeeDto save(RequestEmployeeDto requestEmployeeDto) {
+    return mapToResponseDto(employeeRepository.save(mapToEntity(requestEmployeeDto)));
   }
 
   @Override
-  public void update(Employee employee) {
+  public ResponseEmployeeDto update(RequestEmployeeDto requestEmployeeDto) {
     Employee employeeToUpdate =
-        employeeRepository.findById(employee.getId()).orElseThrow(EntityNotFoundException::new);
-    employeeToUpdate.setFirstName(employee.getFirstName());
-    employeeToUpdate.setLastName(employee.getLastName());
-    employeeToUpdate.setEmail(employee.getEmail());
-    employeeToUpdate.setPosition(employee.getPosition());
-    employeeRepository.save(employeeToUpdate);
+        employeeRepository
+            .findById(requestEmployeeDto.getId())
+            .orElseThrow(() -> new EntityNotFoundException("Cannot find such department"));
+    employeeToUpdate.setFirstName(requestEmployeeDto.getFirstName());
+    employeeToUpdate.setLastName(requestEmployeeDto.getLastName());
+    employeeToUpdate.setEmail(requestEmployeeDto.getEmail());
+    employeeToUpdate.setPosition(requestEmployeeDto.getPosition());
+    return mapToResponseDto(employeeRepository.save(employeeToUpdate));
   }
 
   @Override
-  public void delete(Employee employee) {
-    employeeRepository.delete(employee);
+  public Employee mapToEntity(RequestEmployeeDto requestEmployeeDto) {
+    Employee employee = new Employee();
+    employee.setId(requestEmployeeDto.getId());
+    employee.setFirstName(requestEmployeeDto.getFirstName());
+    employee.setLastName(requestEmployeeDto.getLastName());
+    employee.setEmail(requestEmployeeDto.getEmail());
+    employee.setPassword(requestEmployeeDto.getPassword());
+    employee.setPosition(requestEmployeeDto.getPosition());
+    employee.setDepartmentId(
+        departmentRepository
+            .findByTitle(requestEmployeeDto.getDepartmentTitle())
+            .orElseThrow(() -> new EntityNotFoundException("Cannot find such department")));
+    return employee;
+  }
+
+  @Override
+  public ResponseEmployeeDto mapToResponseDto(Employee employee) {
+    ResponseEmployeeDto responseEmployeeDto = new ResponseEmployeeDto();
+    responseEmployeeDto.setId(employee.getId());
+    responseEmployeeDto.setFirstName(employee.getFirstName());
+    responseEmployeeDto.setLastName(employee.getLastName());
+    responseEmployeeDto.setEmail(employee.getEmail());
+    responseEmployeeDto.setPosition(employee.getPosition());
+    responseEmployeeDto.setDepartmentTitle(employee.getDepartmentId().getTitle());
+    return responseEmployeeDto;
+  }
+
+  @Override
+  public ResponseEmployeeDto mapToResponseDto(RequestEmployeeDto requestEmployeeDto) {
+    ResponseEmployeeDto responseEmployeeDto = new ResponseEmployeeDto();
+    responseEmployeeDto.setId(requestEmployeeDto.getId());
+    responseEmployeeDto.setFirstName(requestEmployeeDto.getFirstName());
+    responseEmployeeDto.setLastName(requestEmployeeDto.getLastName());
+    responseEmployeeDto.setEmail(requestEmployeeDto.getEmail());
+    responseEmployeeDto.setPosition(requestEmployeeDto.getPosition());
+    responseEmployeeDto.setDepartmentTitle(requestEmployeeDto.getDepartmentTitle());
+    return responseEmployeeDto;
   }
 
   @Override
   public void deleteById(Long id) {
-    employeeRepository.findById(id);
+    employeeRepository.deleteById(id);
   }
 
   @Override
-  public List<Employee> findAll() {
-    return employeeRepository.findAll();
+  public List<ResponseEmployeeDto> findAll() {
+    return employeeRepository.findAll().stream().map(this::mapToResponseDto).collect(toList());
   }
 
   @Override
-  public Employee findById(Long id) {
-    return employeeRepository
-        .findById(id)
-        .orElseThrow(() -> new EntityNotFoundException("Employee with such id does not exist"));
+  public ResponseEmployeeDto findById(Long id) {
+    return mapToResponseDto(
+        employeeRepository
+            .findById(id)
+            .orElseThrow(() -> new EntityNotFoundException(EMPLOYEE_NOT_FOUND_MESSAGE)));
+  }
+
+  @Override
+  public ResponseEmployeeDto findByEmail(String email) {
+    return mapToResponseDto(
+        employeeRepository
+            .findByEmail(email)
+            .orElseThrow(() -> new EntityNotFoundException(EMPLOYEE_NOT_FOUND_MESSAGE)));
   }
 }

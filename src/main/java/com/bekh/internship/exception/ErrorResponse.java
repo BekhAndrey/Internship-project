@@ -1,4 +1,4 @@
-package com.bekh.internship.controller;
+package com.bekh.internship.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

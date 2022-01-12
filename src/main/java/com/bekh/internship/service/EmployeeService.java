@@ -1,20 +1,28 @@
 package com.bekh.internship.service;
 
+import com.bekh.internship.dto.RequestEmployeeDto;
+import com.bekh.internship.dto.ResponseEmployeeDto;
 import com.bekh.internship.model.Employee;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 public interface EmployeeService {
-  void save(Employee employee);
+  ResponseEmployeeDto save(RequestEmployeeDto employee);
 
-  void update(Employee employee);
+  ResponseEmployeeDto update(RequestEmployeeDto employee);
 
-  void delete(Employee employee);
+
+  Employee mapToEntity(RequestEmployeeDto requestEmployeeDto);
+
+  ResponseEmployeeDto mapToResponseDto(Employee employee);
+
+  ResponseEmployeeDto mapToResponseDto(RequestEmployeeDto requestEmployeeDto);
 
   void deleteById(Long id);
 
-  List<Employee> findAll();
+  List<ResponseEmployeeDto> findAll();
 
-  Employee findById(Long id);
+  ResponseEmployeeDto findById(Long id);
+
+  ResponseEmployeeDto findByEmail(String email);
 }

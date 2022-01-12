@@ -1,38 +1,61 @@
 package com.bekh.internship.service.impl;
 
+import com.bekh.internship.dto.ProjectDto;
 import com.bekh.internship.model.Project;
+import com.bekh.internship.repository.DepartmentRepository;
 import com.bekh.internship.repository.ProjectRepository;
 import com.bekh.internship.service.ProjectService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
-@Service("projectService")
+import static java.util.Collections.emptySet;
+import static java.util.stream.Collectors.toList;
+
+@Service
+@AllArgsConstructor
 public class ProjectServiceImpl implements ProjectService {
 
-  @Autowired private ProjectRepository projectRepository;
+  private static final String PROJECT_NOT_FOUND_MESSAGE = "Cannot find such project";
+  private final ProjectRepository projectRepository;
 
   @Override
-  public void save(Project project) {
-    projectRepository.save(project);
+  public ProjectDto save(ProjectDto projectDto) {
+    return mapToDto(projectRepository.save(mapToEntity(projectDto)));
   }
 
   @Override
-  public void update(Project project) {
+  public ProjectDto update(ProjectDto projectDto) {
     Project projectToUpdate =
-        projectRepository.findById(project.getId()).orElseThrow(EntityNotFoundException::new);
-    projectToUpdate.setTitle(project.getTitle());
-    projectToUpdate.setStartDate(project.getStartDate());
-    projectToUpdate.setEndDate(project.getEndDate());
-    projectRepository.save(projectToUpdate);
+        projectRepository.findById(projectDto.getId()).orElseThrow(EntityNotFoundException::new);
+    projectToUpdate.setTitle(projectDto.getTitle());
+    projectToUpdate.setStartDate(projectDto.getStartDate());
+    projectToUpdate.setEndDate(projectDto.getEndDate());
+    return mapToDto(projectRepository.save(projectToUpdate));
   }
 
   @Override
-  public void delete(Project project) {
-    projectRepository.delete(project);
+  public Project mapToEntity(ProjectDto projectDto) {
+    Project project = new Project();
+    project.setId(projectDto.getId());
+    project.setTitle(projectDto.getTitle());
+    project.setStartDate(projectDto.getStartDate());
+    project.setEndDate(projectDto.getEndDate());
+    return project;
+  }
+
+  @Override
+  public ProjectDto mapToDto(Project project) {
+    ProjectDto projectDto = new ProjectDto();
+    projectDto.setId(project.getId());
+    projectDto.setTitle(project.getTitle());
+    projectDto.setStartDate(project.getStartDate());
+    projectDto.setEndDate(project.getEndDate());
+    return projectDto;
   }
 
   @Override
@@ -41,14 +64,21 @@ public class ProjectServiceImpl implements ProjectService {
   }
 
   @Override
-  public List<Project> findAll() {
-    return projectRepository.findAll();
+  public List<ProjectDto> findAll() {
+    return projectRepository.findAll().stream().map(this::mapToDto).collect(toList());
   }
 
   @Override
-  public Project findById(Long id) {
-    return projectRepository
-        .findById(id)
-        .orElseThrow(() -> new EntityNotFoundException("Project with such id does not exist"));
+  public ProjectDto findById(Long id) {
+    return mapToDto(projectRepository
+            .findById(id)
+            .orElseThrow(() -> new EntityNotFoundException(PROJECT_NOT_FOUND_MESSAGE)));
+  }
+
+  @Override
+  public ProjectDto findByTitle(String title) {
+    return mapToDto(projectRepository
+            .findByTitle(title)
+            .orElseThrow(() -> new EntityNotFoundException(PROJECT_NOT_FOUND_MESSAGE)));
   }
 }

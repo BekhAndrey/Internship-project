@@ -1,5 +1,6 @@
 package com.bekh.internship.controller;
 
+import com.bekh.internship.dto.DepartmentDto;
 import com.bekh.internship.model.Department;
 import com.bekh.internship.service.DepartmentService;
 import com.bekh.internship.service.impl.DepartmentServiceImpl;
@@ -10,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,13 +23,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/departments")
 @Tag(name = "department", description = "Department API")
+@AllArgsConstructor
 public class DepartmentController {
 
   private final DepartmentService departmentService;
-
-  public DepartmentController(DepartmentService departmentService) {
-    this.departmentService = departmentService;
-  }
 
   @Operation(
       summary = "Find all departments",
@@ -39,11 +38,12 @@ public class DepartmentController {
             responseCode = "200",
             description = "Successful operation",
             content =
-                @Content(array = @ArraySchema(schema = @Schema(implementation = Department.class))))
+                @Content(array = @ArraySchema(schema = @Schema(implementation = DepartmentDto.class))))
       })
-  @GetMapping("/")
-  public ResponseEntity<List<Department>> getDepartments() {
-    return ResponseEntity.ok(departmentService.findAll());
+  @GetMapping
+  @ResponseStatus(HttpStatus.OK)
+  public List<DepartmentDto> getAll() {
+    return departmentService.findAll();
   }
 
   @Operation(
@@ -53,14 +53,14 @@ public class DepartmentController {
   @ApiResponses(
       value = {
         @ApiResponse(
-            responseCode = "200",
+            responseCode = "201",
             description = "Successful operation",
-            content = @Content(schema = @Schema(implementation = Department.class)))
+            content = @Content(schema = @Schema(implementation = DepartmentDto.class)))
       })
-  @PostMapping("/")
-  public ResponseEntity<Department> createDepartment(@RequestBody Department department) {
-    departmentService.save(department);
-    return ResponseEntity.ok(department);
+  @PostMapping
+  @ResponseStatus(HttpStatus.CREATED)
+  public DepartmentDto create(@RequestBody DepartmentDto departmentDto) {
+    return departmentService.save(departmentDto);
   }
 
   @Operation(
@@ -72,14 +72,13 @@ public class DepartmentController {
         @ApiResponse(
             responseCode = "200",
             description = "Successful operation",
-            content = @Content(schema = @Schema(implementation = Department.class)))
+            content = @Content(schema = @Schema(implementation = DepartmentDto.class)))
       })
-  @PutMapping("/")
-  public ResponseEntity<Department> updateDepartment(@RequestBody Department department) {
-    Department departmentToUpdate = departmentService.findById(department.getId());
-    departmentToUpdate.setTitle(department.getTitle());
-    departmentService.save(departmentToUpdate);
-    return ResponseEntity.ok(departmentToUpdate);
+  @PutMapping("/edit/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  public DepartmentDto update(@PathVariable Long id,@RequestBody DepartmentDto departmentDto) {
+    departmentDto.setId(id);
+    return departmentService.update(departmentDto);
   }
 
   @Operation(
@@ -87,8 +86,9 @@ public class DepartmentController {
       description = "Delete existing department",
       tags = {"department"})
   @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successful operation")})
-  @DeleteMapping("/{id}")
-  public void deleteDepartment(@PathVariable Long id) {
+  @DeleteMapping("/delete/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  public void delete(@PathVariable Long id) {
     departmentService.deleteById(id);
   }
 }
