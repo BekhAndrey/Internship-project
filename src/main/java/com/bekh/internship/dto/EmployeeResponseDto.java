@@ -1,6 +1,5 @@
 package com.bekh.internship.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -12,7 +11,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponseEmployeeDto {
+public class EmployeeResponseDto {
     @Schema(description = "Unique identifier of the Employee.", example = "1")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
