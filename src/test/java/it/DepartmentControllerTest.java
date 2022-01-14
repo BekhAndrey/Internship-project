@@ -1,14 +1,11 @@
-package controller;
+package it;
 
+import com.bekh.internship.config.JpaConfig;
+import com.bekh.internship.config.LiquibaseConfig;
 import com.bekh.internship.config.SpringConfig;
-import com.bekh.internship.dto.ProjectDto;
-import com.bekh.internship.dto.RequestEmployeeDto;
+import com.bekh.internship.dto.DepartmentDto;
 import com.bekh.internship.service.DepartmentService;
-import com.bekh.internship.service.EmployeeService;
-import com.bekh.internship.service.ProjectService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,9 +20,9 @@ import org.springframework.web.context.WebApplicationContext;
 
 import javax.transaction.Transactional;
 
-import java.time.LocalDate;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -33,40 +30,36 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
 @Transactional
-public class ProjectControllerTest {
+public class DepartmentControllerTest {
 
   private MockMvc mockMvc;
   private ObjectMapper mapper;
 
   @Autowired private WebApplicationContext webApplicationContext;
 
-  @Autowired private ProjectService projectService;
+  @Autowired private DepartmentService departmentService;
 
   @BeforeEach
   public void setUp() {
     mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
     mapper = new ObjectMapper();
-    mapper.registerModule(new JavaTimeModule());
-    mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
   }
 
   @Transactional
   @Test
-  public void getProjectsTest() throws Exception {
-    mockMvc.perform(get("/projects")).andExpect(status().isOk());
+  public void getDepartmentsTest() throws Exception {
+    mockMvc.perform(get("/departments")).andExpect(status().isOk());
   }
 
   @Transactional
   @Test
-  public void createProjectTest() throws Exception {
-    ProjectDto projectDto = new ProjectDto();
-    projectDto.setTitle("Test title");
-    projectDto.setStartDate(LocalDate.now());
-    projectDto.setEndDate(LocalDate.now());
-    String json = mapper.writeValueAsString(projectDto);
+  public void createDepartmentTest() throws Exception {
+    DepartmentDto departmentDto = new DepartmentDto();
+    departmentDto.setTitle("Test Department");
+    String json = mapper.writeValueAsString(departmentDto);
     mockMvc
         .perform(
-            post("/projects")
+            post("/departments")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
@@ -75,41 +68,38 @@ public class ProjectControllerTest {
 
   @Transactional
   @Test
-  public void updateProjectTest() throws Exception {
-    ProjectDto projectDto = createProjectDto();
-    projectDto.setTitle("New title");
-    String json = mapper.writeValueAsString(projectDto);
+  public void updateDepartmentTest() throws Exception {
+    DepartmentDto departmentToUpdate = createDepartmentDto();
+    departmentToUpdate.setTitle("Updated title");
+    String json = mapper.writeValueAsString(departmentToUpdate);
     mockMvc
         .perform(
-            put("/projects/edit/{id}", projectDto.getId())
+            put("/departments/{id}", departmentToUpdate.getId())
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.title").value("New title"))
+        .andExpect(jsonPath("$.title").value("Updated title"))
         .andExpect(content().json(json));
-    ;
   }
 
   @Transactional
   @Test
-  public void deleteProjectTest() throws Exception {
-    ProjectDto projectDto = createProjectDto();
-    String json = mapper.writeValueAsString(projectDto);
+  public void deleteDepartmentTest() throws Exception {
+    DepartmentDto departmentDto = createDepartmentDto();
+    String json = mapper.writeValueAsString(departmentDto);
     mockMvc
         .perform(
-            delete("/projects/delete/{id}", projectDto.getId())
+            delete("/departments/{id}", departmentDto.getId())
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
         .andExpect(status().isOk());
   }
 
-  private ProjectDto createProjectDto() {
-    ProjectDto projectDto = new ProjectDto();
-    projectDto.setTitle("Test title");
-    projectDto.setStartDate(LocalDate.now());
-    projectDto.setEndDate(LocalDate.now());
-    return projectService.save(projectDto);
+  private DepartmentDto createDepartmentDto() {
+    DepartmentDto departmentDto = new DepartmentDto();
+    departmentDto.setTitle("Test department");
+    return departmentService.save(departmentDto);
   }
 }

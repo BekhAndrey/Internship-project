@@ -1,28 +1,23 @@
 package com.bekh.internship.service;
 
-import com.bekh.internship.dto.RequestEmployeeDto;
-import com.bekh.internship.dto.ResponseEmployeeDto;
+import com.bekh.internship.dto.EmployeeRequestDto;
+import com.bekh.internship.dto.EmployeeResponseDto;
 import com.bekh.internship.model.Employee;
 
 import java.util.List;
 
 public interface EmployeeService {
-  ResponseEmployeeDto save(RequestEmployeeDto employee);
+  EmployeeResponseDto save(EmployeeRequestDto employee);
 
-  ResponseEmployeeDto update(RequestEmployeeDto employee);
-
-
-  Employee mapToEntity(RequestEmployeeDto requestEmployeeDto);
-
-  ResponseEmployeeDto mapToResponseDto(Employee employee);
-
-  ResponseEmployeeDto mapToResponseDto(RequestEmployeeDto requestEmployeeDto);
+  EmployeeResponseDto update(EmployeeRequestDto employee);
 
   void deleteById(Long id);
 
-  List<ResponseEmployeeDto> findAll();
+  List<EmployeeResponseDto> findAll();
 
-  ResponseEmployeeDto findById(Long id);
+  EmployeeResponseDto findById(Long id);
 
-  ResponseEmployeeDto findByEmail(String email);
+  EmployeeResponseDto findByEmail(String email);
+
+  EmployeeRequestDto getEmployeeRequestDtoByEmail(String email);
 }

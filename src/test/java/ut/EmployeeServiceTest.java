@@ -1,15 +1,12 @@
-package service;
+package ut;
 
-import com.bekh.internship.dto.DepartmentDto;
-import com.bekh.internship.dto.RequestEmployeeDto;
-import com.bekh.internship.dto.ResponseEmployeeDto;
+import com.bekh.internship.dto.EmployeeRequestDto;
+import com.bekh.internship.dto.EmployeeResponseDto;
 import com.bekh.internship.model.Department;
 import com.bekh.internship.model.Employee;
 import com.bekh.internship.repository.DepartmentRepository;
 import com.bekh.internship.repository.EmployeeRepository;
-import com.bekh.internship.repository.ProjectRepository;
 import com.bekh.internship.service.impl.EmployeeServiceImpl;
-import com.bekh.internship.service.impl.ProjectServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -37,7 +34,7 @@ public class EmployeeServiceTest {
 
   @BeforeEach
   public void setUp() {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
   }
 
   @Test
@@ -47,7 +44,7 @@ public class EmployeeServiceTest {
     employees.add(createEmployee(2L, "email2@gmail.com"));
     employees.add(createEmployee(3L, "email3@gmail.com"));
     given(employeeRepository.findAll()).willReturn(employees);
-    List<ResponseEmployeeDto> expected = employeeService.findAll();
+    List<EmployeeResponseDto> expected = employeeService.findAll();
     for (int i = 0; i < employees.size(); i++) {
       assertEquals(expected.get(i).getEmail(), employees.get(i).getEmail());
     }
@@ -55,7 +52,7 @@ public class EmployeeServiceTest {
 
   @Test
   public void saveEmployeeTest() {
-    RequestEmployeeDto requestEmployeeDto = new RequestEmployeeDto();
+    EmployeeRequestDto requestEmployeeDto = new EmployeeRequestDto();
     requestEmployeeDto.setEmail("email1@gmail.com");
     requestEmployeeDto.setFirstName("Test first name");
     requestEmployeeDto.setLastName("Test last name");
@@ -65,14 +62,14 @@ public class EmployeeServiceTest {
     given(departmentRepository.findByTitle(any(String.class)))
         .willReturn(Optional.of(new Department(1L, "Test title", emptyList())));
     given(employeeRepository.save(any(Employee.class))).willAnswer(i -> i.getArguments()[0]);
-    ResponseEmployeeDto savedEmployeeDto = employeeService.save(requestEmployeeDto);
+    EmployeeResponseDto savedEmployeeDto = employeeService.save(requestEmployeeDto);
     assertNotNull(savedEmployeeDto);
     verify(employeeRepository).save(any(Employee.class));
   }
 
   @Test
   public void updateEmployeeTest() {
-    RequestEmployeeDto requestEmployeeDto = new RequestEmployeeDto();
+    EmployeeRequestDto requestEmployeeDto = new EmployeeRequestDto();
     requestEmployeeDto.setId(1L);
     requestEmployeeDto.setEmail("email1@gmail.com");
     requestEmployeeDto.setFirstName("Test first name");
@@ -84,7 +81,7 @@ public class EmployeeServiceTest {
             .willReturn(Optional.of(new Department(1L, "Test title", emptyList())));
     given(employeeRepository.findById(1L)).willReturn(Optional.of(createEmployee(1L, "email1@gmail.com")));
     given(employeeRepository.save(any(Employee.class))).willAnswer(i -> i.getArguments()[0]);
-    ResponseEmployeeDto updatedEmployeeDto = employeeService.update(requestEmployeeDto);
+    EmployeeResponseDto updatedEmployeeDto = employeeService.update(requestEmployeeDto);
     assertEquals(requestEmployeeDto.getEmail(), updatedEmployeeDto.getEmail());
     verify(employeeRepository).save(any(Employee.class));
   }
@@ -102,7 +99,7 @@ public class EmployeeServiceTest {
           given(employeeRepository.findByEmail("email1@gmail.com"))
                   .willReturn(
                           Optional.of(employee));
-          ResponseEmployeeDto dto = employeeService.findByEmail("email1@gmail.com");
+          EmployeeResponseDto dto = employeeService.findByEmail("email1@gmail.com");
           assertNotNull(dto);
       }
 
@@ -113,7 +110,7 @@ public class EmployeeServiceTest {
           given(employeeRepository.findById(id))
                   .willReturn(
                           Optional.of(employee));
-          ResponseEmployeeDto dto = employeeService.findById(id);
+          EmployeeResponseDto dto = employeeService.findById(id);
           assertNotNull(dto);
       }
 
@@ -124,8 +121,8 @@ public class EmployeeServiceTest {
     employee.setLastName("Test last name");
     employee.setEmail(email);
     employee.setPassword("qwerty");
-    employee.setPosition("test position");
-    employee.setDepartmentId(new Department(1L, "Test title", emptyList()));
+    employee.setJobTitle("test position");
+    employee.setDepartment(new Department(1L, "Test title", emptyList()));
     return employee;
   }
 

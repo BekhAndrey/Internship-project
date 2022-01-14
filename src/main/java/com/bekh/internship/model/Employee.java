@@ -1,8 +1,6 @@
 package com.bekh.internship.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +9,6 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -33,13 +30,14 @@ public class Employee {
 
   private String password;
 
-  private String position;
+  @Column(name = "job_title")
+  private String jobTitle;
 
   @ManyToOne
   @JoinColumn(name = "department_id")
-  private Department departmentId;
+  private Department department;
 
   @JsonIgnore
-  @OneToMany(mappedBy = "employeeId")
-  private List<Position> employeeProjects = new ArrayList<>();
+  @OneToMany(mappedBy = "employee")
+  private List<ProjectPosition> employeeProjects = new ArrayList<>();
 }

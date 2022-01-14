@@ -1,4 +1,4 @@
-package service;
+package ut;
 
 import com.bekh.internship.dto.ProjectDto;
 import com.bekh.internship.model.Project;
@@ -30,7 +30,7 @@ public class ProjectServiceTest {
 
   @BeforeEach
   public void setUp(){
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
   }
 
   @Test

@@ -1,6 +1,5 @@
 package com.bekh.internship.model;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,18 +13,19 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Entity
-public class Position {
+@Table(name = "project_position")
+public class ProjectPosition {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @ManyToOne
   @JoinColumn(name = "employee_id")
-  private Employee employeeId;
+  private Employee employee;
 
   @ManyToOne
   @JoinColumn(name = "project_id")
-  private Project projectId;
+  private Project project;
 
   @Column(name = "position_start_date")
   private LocalDate positionStartDate;

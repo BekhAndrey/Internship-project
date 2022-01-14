@@ -1,6 +1,7 @@
 package com.bekh.internship.service.impl;
 
 import com.bekh.internship.dto.DepartmentDto;
+import com.bekh.internship.mapper.DepartmentMapper;
 import com.bekh.internship.model.Department;
 import com.bekh.internship.repository.DepartmentRepository;
 import com.bekh.internship.service.DepartmentService;
@@ -9,9 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.Optional;
 
-import static java.util.Collections.emptySet;
 import static java.util.stream.Collectors.toList;
 
 @Service
@@ -22,7 +21,8 @@ public class DepartmentServiceImpl implements DepartmentService {
 
   @Override
   public DepartmentDto save(DepartmentDto departmentDto) {
-    return mapToDto(departmentRepository.save(mapToEntity(departmentDto)));
+    return DepartmentMapper.mapToDto(
+        departmentRepository.save(DepartmentMapper.mapToEntity(departmentDto)));
   }
 
   @Override
@@ -33,25 +33,12 @@ public class DepartmentServiceImpl implements DepartmentService {
             .orElseThrow(
                 () -> new EntityNotFoundException("Department with such id does not exist"));
     departmentToUpdate.setTitle(departmentDto.getTitle());
-    return mapToDto(departmentRepository.save(departmentToUpdate));
-  }
-
-  @Override
-  public DepartmentDto mapToDto(Department department) {
-    return new DepartmentDto(department.getId(), department.getTitle());
-  }
-
-  @Override
-  public Department mapToEntity(DepartmentDto departmentDto) {
-    Department department = new Department();
-    department.setId(departmentDto.getId());
-    department.setTitle(departmentDto.getTitle());
-    return department;
+    return DepartmentMapper.mapToDto(departmentRepository.save(departmentToUpdate));
   }
 
   @Override
   public DepartmentDto findByTitle(String title) {
-    return mapToDto(
+    return DepartmentMapper.mapToDto(
         departmentRepository
             .findByTitle(title)
             .orElseThrow(
@@ -65,12 +52,14 @@ public class DepartmentServiceImpl implements DepartmentService {
 
   @Override
   public List<DepartmentDto> findAll() {
-    return departmentRepository.findAll().stream().map(this::mapToDto).collect(toList());
+    return departmentRepository.findAll().stream()
+        .map(DepartmentMapper::mapToDto)
+        .collect(toList());
   }
 
   @Override
   public DepartmentDto findById(Long id) {
-    return mapToDto(
+    return DepartmentMapper.mapToDto(
         departmentRepository
             .findById(id)
             .orElseThrow(

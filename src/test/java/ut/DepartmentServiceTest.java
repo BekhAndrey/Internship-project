@@ -1,4 +1,4 @@
-package service;
+package ut;
 
 import com.bekh.internship.dto.DepartmentDto;
 import com.bekh.internship.model.Department;
@@ -6,9 +6,11 @@ import com.bekh.internship.repository.DepartmentRepository;
 import com.bekh.internship.service.impl.DepartmentServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +34,7 @@ public class DepartmentServiceTest {
 
   @BeforeEach
   public void setUp() {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
   }
 
   @Test

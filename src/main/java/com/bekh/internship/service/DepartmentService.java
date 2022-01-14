@@ -10,11 +10,6 @@ public interface DepartmentService {
 
   DepartmentDto update(DepartmentDto departmentDto);
 
-
-  DepartmentDto mapToDto(Department departmentDto);
-
-  Department mapToEntity(DepartmentDto departmentDto);
-
   DepartmentDto findByTitle(String title);
 
   void deleteById(Long id);

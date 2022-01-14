@@ -1,4 +1,4 @@
-package controller;
+package it;
 
 import com.bekh.internship.config.SpringConfig;
 import com.bekh.internship.dto.PositionDto;
@@ -83,7 +83,7 @@ public class PositionControllerTest {
     String json = mapper.writeValueAsString(positionDto);
     mockMvc
         .perform(
-            put("/positions/edit/{id}", positionDto.getId())
+            put("/positions/{id}", positionDto.getId())
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
@@ -99,7 +99,7 @@ public class PositionControllerTest {
     String json = mapper.writeValueAsString(positionDto);
     mockMvc
         .perform(
-            delete("/positions/delete/{id}", positionDto.getId())
+            delete("/positions/{id}", positionDto.getId())
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))

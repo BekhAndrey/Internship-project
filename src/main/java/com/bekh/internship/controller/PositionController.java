@@ -1,7 +1,6 @@
 package com.bekh.internship.controller;
 
 import com.bekh.internship.dto.PositionDto;
-import com.bekh.internship.model.Position;
 import com.bekh.internship.service.PositionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -12,7 +11,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -71,7 +69,7 @@ public class PositionController {
             description = "Successful operation",
             content = @Content(schema = @Schema(implementation = PositionDto.class)))
       })
-  @PutMapping("/edit/{id}")
+  @PutMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
   public PositionDto update(@PathVariable Long id, @RequestBody PositionDto positionDto) {
     positionDto.setId(id);
@@ -83,7 +81,7 @@ public class PositionController {
       description = "Delete existing position",
       tags = {"position"})
   @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successful operation")})
-  @DeleteMapping("/delete/{id}")
+  @DeleteMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
   public void delete(@PathVariable Long id) {
     positionService.deleteById(id);

@@ -1,7 +1,5 @@
 package com.bekh.internship.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +9,6 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -31,6 +28,6 @@ public class Project {
   @Column(name = "end_date")
   private LocalDate endDate;
 
-  @OneToMany(mappedBy = "projectId")
-  private List<Position> employeeProjects = new ArrayList<>();
+  @OneToMany(mappedBy = "project")
+  private List<ProjectPosition> employeeProjects = new ArrayList<>();
 }
